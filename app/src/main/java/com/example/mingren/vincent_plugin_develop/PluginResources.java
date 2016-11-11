@@ -27,14 +27,23 @@ public class PluginResources extends Resources {
         super(assets, metrics, config);
     }
 
+    /**
+     * 得到插件的Resources资源
+     *
+     * @param res       宿主的res
+     * @param pluginApk 插件apk
+     * @return
+     */
     public static PluginResources getPluginResources(Resources res, File pluginApk) {
         if (getPluginAssetManager(pluginApk) == null) return null;
         PluginResources pluginResources = new PluginResources(getPluginAssetManager(pluginApk), res.getDisplayMetrics(), res.getConfiguration());
         return pluginResources;
     }
 
-    //自定义加载插件apk的AssetManager
-   private static AssetManager getPluginAssetManager(File pluginApk) {
+    /**
+     * 自定义加载插件apk的AssetManager
+     */
+    private static AssetManager getPluginAssetManager(File pluginApk) {
         //AssetManager assets = new AssetManager();不能new，隐藏的方法
         try {
             Class<?> forName = Class.forName("android.content.res.AssetManager");
@@ -42,7 +51,6 @@ public class PluginResources extends Resources {
             Method addAssetPath = forName.getDeclaredMethod("addAssetPath", String.class);//得到addAssetPath方法
             addAssetPath.invoke(assetManager, pluginApk.getAbsolutePath());//调用assetManager里面的addAssetPath方法
             return assetManager;
-            //pluginAssetManager.getDeclaredMethod("")
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
